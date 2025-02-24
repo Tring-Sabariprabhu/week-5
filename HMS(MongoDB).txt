@@ -1,0 +1,94 @@
+// Create Doctor details
+function createDoctor(doctor_name, specialization) {
+    
+	if(doctor_name == null || specialization == null)
+		return 'Fields are required (Name, Specialization)';
+	const newRecord = db.doctors.insertOne({
+        doctor_name: doctor_name,
+        specialization: specialization
+    });
+    return newRecord.insertedId;
+}
+
+// Create Patient details
+function createPatient(patient_name, patient_age) {
+    	if(patient_name == null || patient_age == null)
+		return 'Fields are required (Name, Age)';
+        const newRecord = db.patients.insertOne({
+        patient_name: patient_name,
+        patient_age: patient_age
+    });
+    return newRecord.insertedId;
+}
+
+
+function showAllDoctors(){
+	return db.doctors.find();
+	}
+function showAllPatients(){
+	return db.patients.find();
+	}
+
+
+
+function patientExists(p_id) {
+    let result = db.patients.findOne({ _id: ObjectId(p_id) });
+    return result !== null; 
+}
+
+function doctorExists(d_id) {
+    let result = db.doctors.findOne({ _id: ObjectId(d_id) });
+    return result !== null;
+}
+
+// Create Appointment details using Doctor_id , Patient_id
+function createAppointment(d_id, p_id, p_disease) {
+
+    if (!doctorExists(d_id)) {
+        return "Doctor_id didn't match";
+    }
+    if (!patientExists(p_id)) {
+        return "Patient_id didn't match";
+    }
+    let result = db.appointments.insertOne({
+        disease: p_disease,
+        doctor_id: d_id,
+        patient_id: p_id
+    });
+
+    return { acknowledged: result.acknowledged, insertedId: result.insertedId }; 
+}
+
+
+// Appointment count using Doctor_id, Patient_id
+function haveAppointment(d_id, p_id) {
+	
+    if (!doctorExists(d_id)) {
+        return "Doctor_id didn't match";
+    }
+    if (!patientExists(p_id)) {
+        return "Patient_id didn't match";
+    }
+    let count = db.appointments.countDocuments({ doctor_id: d_id, patient_id: p_id });
+    return count > 0 ? count + " Appointments found" : "false";
+}
+
+
+function appointmentListsForDoctor(d_id){
+	
+   if (!doctorExists(d_id)) {
+        return "Doctor_id didn't match";
+    }
+      return db.appointments.find({doctor_id : d_id})
+  }
+
+function appointmentListsForPatient(p_id){
+	
+    if (!patientExists(p_id)) {
+        return "Patient_id didn't match";
+    }
+
+   return db.appointments.find({patient_id : p_id})
+  }
+
+
