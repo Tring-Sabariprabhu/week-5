@@ -43,7 +43,8 @@ function doctorExists(d_id) {
 
 // Create Appointment details using Doctor_id , Patient_id
 function createAppointment(d_id, p_id, p_disease) {
-
+    if(d_id == null || p_id == null || patient_disease == null)
+		return 'Fields are required (doctor ID, patient ID, Disease name)';
     if (!doctorExists(d_id)) {
         return "Doctor_id didn't match";
     }
