@@ -118,7 +118,7 @@ BEGIN
                           WHERE patient_id = p_id AND doctor_id = d_id);
     
     RETURN appointmentsCount;
-    END IF;
+    
 END;
 $$ LANGUAGE plpgsql;
 
