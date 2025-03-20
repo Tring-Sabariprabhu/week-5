@@ -75,7 +75,7 @@ $$ LANGUAGE plpgsql;
 
 -- Doctor present
 CREATE FUNCTION doctor_present(d_id INT)
-RETURNS TEXT AS $$
+RETURNS BOOLEAN AS $$
 DECLARE 
 	present TEXT;
 BEGIN
@@ -83,16 +83,16 @@ BEGIN
 	present := (SELECT doctor_id FROM doctors WHERE doctor_id = d_id );
 	CASE WHEN present IS NOT NULL
 	THEN
-		RETURN 'true';
+		RETURN TRUE;
 	ELSE 
-		RETURN 'false';
+		RETURN FALSE;
 	END CASE;
 END;
 $$ LANGUAGE plpgsql;
 
 -- Patient present
 CREATE FUNCTION patient_present(p_id INT)
-RETURNS TEXT AS $$
+RETURNS BOOLEAN AS $$
 DECLARE 
 	present TEXT;
 BEGIN
@@ -100,16 +100,16 @@ BEGIN
 	present := (SELECT patient_id FROM patients WHERE patient_id = p_id );
 	CASE WHEN present IS NOT NULL
 	THEN
-		RETURN 'true';
+		RETURN TRUE;
 	ELSE 
-		RETURN 'false';
+		RETURN FALSE;
 	END CASE;
 END;
 $$ LANGUAGE plpgsql;
 
 -- Have Appointment
 CREATE FUNCTION have_appointment(d_id INT, p_id INT)
-RETURNS VARCHAR AS $$
+RETURNS INT AS $$
 DECLARE 
     appointmentsCount INT;
 BEGIN 
@@ -117,10 +117,7 @@ BEGIN
                           FROM appointments 
                           WHERE patient_id = p_id AND doctor_id = d_id);
     
-    IF appointmentsCount > 0 THEN
-        RETURN 'Appointments Count ' || appointmentsCount;
-    ELSE
-        RETURN 'false';
+    RETURN appointmentsCount;
     END IF;
 END;
 $$ LANGUAGE plpgsql;
